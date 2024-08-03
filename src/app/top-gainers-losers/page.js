@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchTopGainersLosers } from '../../utils/api';
 import Navbar from '../../components/Navbar';
 import TopLosersGainers from '../../components/TopLosersGainers';
+import withAuth from '../../utils/withAuth';
 
 const TopGainersLosersPage = () => {
     const [data, setData] = useState({ top_gainers: [], top_losers: [] });
@@ -27,4 +28,4 @@ const TopGainersLosersPage = () => {
     );
 };
 
-export default TopGainersLosersPage;
+export default withAuth(TopGainersLosersPage);

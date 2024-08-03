@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchPriceChangePercentage } from '../../utils/api';
 import Navbar from '../../components/Navbar';
 import PriceChangePercentage from '../../components/PriceChangePercentage';
+import withAuth from '../../utils/withAuth';
 
 const PriceChangePercentagePage = () => {
     const [data, setData] = useState([]);
@@ -28,4 +29,4 @@ const PriceChangePercentagePage = () => {
     );
 };
 
-export default PriceChangePercentagePage;
+export default withAuth(PriceChangePercentagePage);

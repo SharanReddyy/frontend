@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchDailyClosingPrice } from '../../utils/api';
 import Navbar from '../../components/Navbar';
 import DailyClosingPrice from '../../components/DailyClosingPrice';
+import withAuth from '../../utils/withAuth';
 
 const DailyClosingPricePage = () => {
     const [data, setData] = useState([]);
@@ -27,4 +28,4 @@ const DailyClosingPricePage = () => {
     );
 };
 
-export default DailyClosingPricePage;
+export default withAuth(DailyClosingPricePage);
