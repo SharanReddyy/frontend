@@ -5,6 +5,7 @@ import { fetchPriceChangePercentage } from '../../utils/api';
 import Navbar from '../../components/Navbar';
 import PriceChangePercentage from '../../components/PriceChangePercentage';
 import withAuth from '../../utils/withAuth';
+import StockHeatmap from '../../components/StockHeatmap';
 
 const PriceChangePercentagePage = () => {
     const [data, setData] = useState([]);
@@ -20,10 +21,10 @@ const PriceChangePercentagePage = () => {
     return (
         <div className="flex">
             <Navbar />
-            <div className="ml-64 p-4">
+            <div className="ml-20 p-4">
                 <h1 className="text-2xl mb-4">Price Change Percentage</h1>
-                <PriceChangePercentage data={data} />
-                {/* <StockHeatmap /> */}
+                {/* <PriceChangePercentage data={data} /> */}
+                <StockHeatmap data={data} />
             </div>
         </div>
     );

@@ -1,62 +1,68 @@
-// src/components/StockHeatmap.js
+// src/components/PriceChangePercentage.js
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Chart, registerables } from 'chart.js';
-import { HeatMap } from 'react-chartjs-2';
-import { fetchPriceChangePercentage } from '../utils/api';
+import React, { useState, useEffect } from 'react';
+import TreemapComponent from './TreemapComponent';
 
-Chart.register(...registerables);
+const PriceChangePercentage = ({ data }) => {
+    const [selectedPeriod, setSelectedPeriod] = useState('24h');
+    const [filteredData, setFilteredData] = useState([]);
 
-const StockHeatmap = () => {
-    const [data, setData] = useState([]);
-    const [labels, setLabels] = useState([]);
+    // Hardcoded market cap values (in billions USD)
+    const marketCaps = {
+        "AAPL": 2500, "MSFT": 2300, "GOOGL": 1600, "AMZN": 1400, "TSLA": 800,
+        "NVDA": 1100, "BRK-B": 700, "META": 900, "UNH": 500, "JNJ": 450,
+        "V": 420, "XOM": 350, "JPM": 400, "PG": 340, "HD": 300,
+        "MA": 320, "LLY": 280, "CVX": 270, "MRK": 290, "PEP": 250,
+        "ABBV": 240, "KO": 230, "PFE": 220, "AVGO": 210, "COST": 200,
+        "TMO": 190, "MCD": 180, "CSCO": 170, "NKE": 160, "WMT": 150,
+        "DIS": 140, "ADBE": 130, "DHR": 120, "NFLX": 110, "ABT": 100,
+        "PM": 90, "VZ": 80, "ORCL": 70, "CRM": 60, "ACN": 50,
+        "NEE": 45, "TXN": 40, "NVS": 35, "TM": 30, "AZN": 25,
+        "SNY": 20, "INTC": 18, "LIN": 15, "TMUS": 12, "AMGN": 10,
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await fetchPriceChangePercentage();
-                const processedData = processData(result);
-                setData(processedData.data);
-                setLabels(processedData.labels);
-            } catch (error) {
-                console.error('Error fetching price change percentage data:', error);
-            }
-        };
+        const periodData = data[selectedPeriod] || [];
 
-        fetchData();
-    }, []);
+        // Prepare filtered data for treemap
+        const filteredData = periodData.map(stock => ({
+            symbol: stock.symbol,
+            percentage_change: stock.percentage_change,
+        }));
 
-    const processData = (result) => {
-        // Assuming result is an array of objects with structure:
-        // [{ symbol: 'AAPL', period: '24h', change_percent: 1.23 }, ...]
-        const labels = result.map(item => item.symbol);
-        const data = result.map(item => item.change_percent);
-        return { labels, data };
-    };
-
-    const heatmapData = {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Price Change Percentage',
-                data: data,
-                backgroundColor: (context) => {
-                    const value = context.dataset.data[context.dataIndex];
-                    const alpha = Math.min(1, Math.abs(value) / 100);  // Normalize between 0 and 1
-                    return value >= 0 ? `rgba(75, 192, 192, ${alpha})` : `rgba(255, 99, 132, ${alpha})`;
-                },
-                borderColor: 'rgba(0, 0, 0, 0.1)',
-                borderWidth: 1
-            }
-        ]
-    };
+        setFilteredData(filteredData);
+    }, [selectedPeriod, data]);
 
     return (
         <div>
-            <h2>Stock Price Change Percentage Heatmap</h2>
-            <HeatMap data={heatmapData} />
+            <div className="mb-4">
+                <button
+                    className={`py-2 px-4 mr-2 rounded ${selectedPeriod === '24h' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    onClick={() => setSelectedPeriod('24h')}
+                >
+                    Last 24 Hours
+                </button>
+                <button
+                    className={`py-2 px-4 mr-2 rounded ${selectedPeriod === '30d' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    onClick={() => setSelectedPeriod('30d')}
+                >
+                    Last 30 Days
+                </button>
+                <button
+                    className={`py-2 px-4 rounded ${selectedPeriod === '1y' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    onClick={() => setSelectedPeriod('1y')}
+                >
+                    Last 1 Year
+                </button>
+            </div>
+
+            <TreemapComponent
+                data={filteredData}
+                marketCaps={marketCaps}
+            />
         </div>
     );
 };
 
-export default StockHeatmap;
+export default PriceChangePercentage;

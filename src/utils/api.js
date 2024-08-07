@@ -46,6 +46,7 @@
 
 import axios from 'axios';
 
+// const API_BASE_URL = 'http://192.168.49.2:30001';
 const API_BASE_URL = 'http://localhost:8000';  // Your Django backend base URL
 
 // Stock data APIs
